@@ -51,4 +51,13 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    // Retrofit for API requests
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+
+    // Gson for JSON serialization
+    implementation("com.google.code.gson:gson:2.11.0")
+
+
 }
