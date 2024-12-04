@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity() {
         // configurar ReclyclerView para products
         val recyclerView : RecyclerView = findViewById(R.id.recyclerViewProducts)
         recyclerView.layoutManager = LinearLayoutManager(this)
+
         fetchProducts()
 
 //        val sampleProducts : String = '[{"id":1,"name":"Crece pelo 3000","price":199.99},{"id":2,"name":"Crece pelo 4000","price":299.99},{"id":3,"name":"Agua","price":9999.99}]'
