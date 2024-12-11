@@ -31,13 +31,32 @@
             tools:ignore="HardcodedText" />
 
         <Button
-            android:id="@+id/editItemToCart"
+            android:id="@+id/addItemToCart"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginHorizontal="10dp"
 
             android:onClick="addToCart"
             android:text="+" />
+
+        <Button
+            android:id="@+id/editItemToCart"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginHorizontal="10dp"
+
+            android:onClick="editToCart"
+            android:text="edit" />
+
+        <Button
+            android:id="@+id/removetemToCart"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginHorizontal="10dp"
+
+            android:layout_weight="1"
+            android:onClick="removeToCart"
+            android:text="-" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

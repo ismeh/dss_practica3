@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dss.practica3.adapters.ProductAdapter
@@ -14,11 +15,13 @@ import com.dss.practica3.api.ApiClient
 import com.dss.practica3.api.ApiService
 import com.dss.practica3.databinding.FragmentHomeBinding
 import com.dss.practica3.models.Product
+import com.dss.practica3.services.CartService
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), ProductAdapter.OnAddToCartClickListener {
 
     private var _binding: FragmentHomeBinding? = null
     private lateinit var productAdapter: ProductAdapter
@@ -62,7 +65,7 @@ class HomeFragment : Fragment() {
                     val productList = response.body()
                     Log.d("API_RESPONSE", "Productos: $productList")
                     productList?.let {
-                        productAdapter = ProductAdapter(it)
+                        productAdapter = ProductAdapter(it, this@HomeFragment)
                         recyclerView.adapter = productAdapter
                     }
                 } else {
@@ -74,5 +77,12 @@ class HomeFragment : Fragment() {
                 Log.e("API_ERROR", "Failure: ${t.message}")
             }
         })
+    }
+
+    override fun onAddToCartClick(product: Product) {
+        lifecycleScope.launch {
+            CartService.addItem(product.id, 1)
+            Log.d("CART_SERVICE", "Producto añadido al carrito: ${product.name}")
+        }
     }
 }
