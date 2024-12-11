@@ -14,6 +14,7 @@ import com.dss.practica3.adapters.CartAdapter
 import com.dss.practica3.api.ApiClient
 import com.dss.practica3.api.ApiService
 import com.dss.practica3.databinding.FragmentCartBinding
+import com.dss.practica3.models.CartItem
 import com.dss.practica3.models.Product
 import com.dss.practica3.services.CartService
 import kotlinx.coroutines.launch
@@ -21,7 +22,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class CartFragment : Fragment(), CartAdapter.OnAddToCartClickListener {
+class CartFragment : Fragment(), CartAdapter.OnAddToCartClickListener,
+    CartAdapter.OnRemoveToCartClickListener {
 
     private var _binding: FragmentCartBinding? = null
     private lateinit var cartAdapter: CartAdapter
@@ -43,13 +45,13 @@ class CartFragment : Fragment(), CartAdapter.OnAddToCartClickListener {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         // Initialize the adapter with an empty list
-        cartAdapter = CartAdapter(emptyList(), this)
+        cartAdapter = CartAdapter(emptyList(), this, this)
         recyclerView.adapter = cartAdapter
 
         val root: View = binding.root
-//        lifecycleScope.launch {
-        fetchCart()
-//        }
+        lifecycleScope.launch {
+            fetchCart()
+        }
         return root
     }
 
@@ -58,10 +60,9 @@ class CartFragment : Fragment(), CartAdapter.OnAddToCartClickListener {
         _binding = null
     }
 
-    private fun fetchCart() {
-//        val listCartIds: List<CartItem> = CartService.getItems()
-//        val cartIds = listCartIds.joinToString("_") { it.productId.toString() }
-        val cartIds = "1_2_3"
+    private suspend fun fetchCart() {
+        val listCartIds: List<CartItem> = CartService.getItems()
+        val cartIds = listCartIds.joinToString("_") { it.productId.toString() }
         apiService.getProductsById(cartIds).enqueue(object : Callback<List<Product>> {
             override fun onResponse(
                 call: Call<List<Product>>,
@@ -71,7 +72,7 @@ class CartFragment : Fragment(), CartAdapter.OnAddToCartClickListener {
                     val productList = response.body()
                     Log.d("API_RESPONSE", "Productos del carrito: $productList")
                     productList?.let {
-                        cartAdapter.updateProducts(it)
+                        cartAdapter.updateProducts(it, listCartIds)
                     }
                 } else {
                     Log.e("API_ERROR", "Error code: ${response.code()}")
@@ -88,6 +89,12 @@ class CartFragment : Fragment(), CartAdapter.OnAddToCartClickListener {
         lifecycleScope.launch {
             CartService.addItem(product.id, 1)
             Log.d("CART_SERVICE", "Producto añadido al carrito: ${product.name}")
+        }
+    }
+    override fun onRemoveToCartClick(product: Product) {
+        lifecycleScope.launch {
+            CartService.removeItem(product.id, 1)
+            Log.d("CART_SERVICE", "Producto borrado al carrito: ${product.name}")
         }
     }
 }

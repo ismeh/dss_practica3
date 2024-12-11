@@ -34,27 +34,24 @@
             android:id="@+id/addItemToCart"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginHorizontal="10dp"
+            android:layout_marginLeft="10dp"
 
             android:onClick="addToCart"
             android:text="+" />
 
-        <Button
-            android:id="@+id/editItemToCart"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginHorizontal="10dp"
-
-            android:onClick="editToCart"
-            android:text="edit" />
+        <TextView
+            android:id="@+id/textViewQuantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="1dp"
+            android:text="1" />
 
         <Button
-            android:id="@+id/removetemToCart"
+            android:id="@+id/removeItemToCart"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginHorizontal="10dp"
+            android:layout_marginHorizontal="3dp"
 
-            android:layout_weight="1"
             android:onClick="removeToCart"
             android:text="-" />
     </LinearLayout>
