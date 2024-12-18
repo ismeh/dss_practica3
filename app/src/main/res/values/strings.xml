@@ -2,5 +2,8 @@
     <string name="app_name">practica3</string>
     <string name="title_home">Home</string>
     <string name="title_cart">Carrito</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_map">Mapa</string>
+    <string name="title_activity_maps">Mapa</string>
+    <string name="tittle_login">Login</string>
+    <string name="title_activity_borrarmapa">borrarmapa</string>
 </resources>

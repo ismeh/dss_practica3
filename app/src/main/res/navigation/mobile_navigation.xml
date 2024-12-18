@@ -17,9 +17,15 @@
         android:label="@string/title_cart"
         tools:layout="@layout/fragment_cart" />
 
+    <activity
+        android:id="@+id/navigation_map"
+        android:name="com.dss.practica3.ui.googlemap.MapsActivity"
+        android:label="@string/title_map"
+        tools:layout="@layout/activity_maps" />
+
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.dss.practica3.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/navigation_login"
+        android:name="com.dss.practica3.ui.login.LoginFragment"
+        android:label="Login"
+        tools:layout="@layout/fragment_login" />
 </navigation>
