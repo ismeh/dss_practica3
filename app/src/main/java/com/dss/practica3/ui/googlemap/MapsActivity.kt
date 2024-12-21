@@ -3,7 +3,9 @@ package com.dss.practica3.ui.googlemap
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +15,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import com.dss.practica3.R
 import com.dss.practica3.databinding.ActivityMapsBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -33,12 +36,17 @@ import com.google.android.gms.maps.model.MarkerOptions
 //class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
 class MapsActivity : FragmentActivity(), OnMapReadyCallback {
-
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient // Google Play Services Location Provider
-    private lateinit var locationRequest: LocationRequest
-    private var currentLocationMarker: Marker? = null
+//    private lateinit var locationRequest: LocationRequest
+//    private var currentLocationMarker: Marker? = null
+
+
+//    private var map: GoogleMap? = null
+    private var locationPermissionGranted = false
+    private val defaultLocation = LatLng(37.197082561503294, -3.624592936200811) //ETSIIT
+    private var lastKnownLocation: Location? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,40 +59,11 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback {
             .findFragmentById(com.dss.practica3.R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        // Comprobar permisos de ubicación
-//        checkLocationPermission()
 
 //        // Inicializar FusedLocationProviderClient
-//        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-//
-//        // Configurar las actualizaciones de ubicación
-//         LocationRequest.Builder(locationRequest)
-//             .setIntervalMillis(5000)
-//             .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
-//             .setMinUpdateIntervalMillis(2000)
-//             .build()
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
     }
-
-//    override fun onCreateView(
-//        inflater: LayoutInflater, container: ViewGroup?,
-//        savedInstanceState: Bundle?
-//    ): View {
-//        return inflater.inflate(com.dss.practica3.R.layout.activity_main, container, false)
-//    }
-//
-//    fun onActivityCreated(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//
-//        binding = ActivityMapsBinding.inflate(layoutInflater)
-//        setContentView(binding.root)
-//
-//        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-//        val mapFragment = supportFragmentManager
-//            .findFragmentById(R.id.map) as SupportMapFragment
-//        mapFragment.getMapAsync(this)
-//
-//    }
 
     /**
      * Manipulates the map once available.
@@ -103,95 +82,116 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback {
         mMap.addMarker(MarkerOptions().position(maracena).title("Marcador en el Kebab Maracena"))
         mMap.moveCamera(CameraUpdateFactory.newLatLng(maracena))
 
-//        // Habilitar el botón de ubicación en el mapa
-//        if (ActivityCompat.checkSelfPermission(
-//                this,
-//                Manifest.permission.ACCESS_FINE_LOCATION
-//            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-//                this,
-//                Manifest.permission.ACCESS_COARSE_LOCATION
-//            ) != PackageManager.PERMISSION_GRANTED
-//        ) {
-//            // TODO: Consider calling
-//            //    ActivityCompat#requestPermissions
-//            // here to request the missing permissions, and then overriding
-//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//            //                                          int[] grantResults)
-//            // to handle the case where the user grants the permission. See the documentation
-//            // for ActivityCompat#requestPermissions for more details.
-//            return checkLocationPermission()
-//        }
-//        mMap.isMyLocationEnabled = true
-//
-//        // Comenzar a recibir actualizaciones de ubicación
-//        startLocationUpdates()
+        // Turn on the My Location layer and the related control on the map.
+        updateLocationUI()
+
+        // Get the current location of the device and set the position of the map.
+        getDeviceLocation()
+
+
     }
 
-    private val requestPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        if (isGranted) {
-            startLocationUpdates()
+
+    private fun getLocationPermission() {
+        /*
+         * Request location permission, so that we can get the location of the
+         * device. The result of the permission request is handled by a callback,
+         * onRequestPermissionsResult.
+         */
+        if (ContextCompat.checkSelfPermission(this.applicationContext,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED) {
+            locationPermissionGranted = true
         } else {
-            // Maneja el caso donde el permiso es rechazado
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)
         }
     }
 
-    private fun checkLocationPermission() {
-        when {
-            ContextCompat.checkSelfPermission(
-                this, android.Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED -> {
-                // El permiso ya ha sido otorgado
-                startLocationUpdates()
+    override fun onRequestPermissionsResult(requestCode: Int,
+                                            permissions: Array<String>,
+                                            grantResults: IntArray) {
+        locationPermissionGranted = false
+        when (requestCode) {
+            PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION -> {
+
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.isNotEmpty() &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    locationPermissionGranted = true
+                }
             }
-            else -> {
-                // Solicitar permiso
-                requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
+            else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        }
+        updateLocationUI()
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun updateLocationUI() {
+        if (mMap == null) {
+            return
+        }
+        try {
+            getLocationPermission()
+
+            if (locationPermissionGranted) {
+                mMap?.isMyLocationEnabled = true
+                mMap?.uiSettings?.isMyLocationButtonEnabled = true
+            } else {
+                mMap?.isMyLocationEnabled = false
+                mMap?.uiSettings?.isMyLocationButtonEnabled = false
+                lastKnownLocation = null
             }
+        } catch (e: SecurityException) {
+            Log.e("Exception: %s", e.message, e)
         }
     }
 
     @SuppressLint("MissingPermission")
-    private fun startLocationUpdates() {
-        fusedLocationProviderClient.requestLocationUpdates(
-            locationRequest,
-            locationCallback,
-            mainLooper
-        )
-    }
-
-    private val locationCallback = object : LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult) {
-            super.onLocationResult(locationResult)
-
-            // Obtener la última ubicación
-            val location = locationResult.lastLocation
-            val currentLatLng = location?.let { LatLng(it.latitude, location.longitude) }
-
-            if (currentLatLng == null) {
-                return
+    private fun getDeviceLocation() {
+        /*
+         * Get the best and most recent location of the device, which may be null in rare
+         * cases when a location is not available.
+         */
+        try {
+            if (locationPermissionGranted) {
+                val locationResult = fusedLocationProviderClient.lastLocation
+                locationResult.addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        // Set the map's camera position to the current location of the device.
+                        lastKnownLocation = task.result
+                        if (lastKnownLocation != null) {
+                            mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                LatLng(lastKnownLocation!!.latitude,
+                                    lastKnownLocation!!.longitude), DEFAULT_ZOOM.toFloat()))
+                        }
+                    } else {
+                        Log.d(TAG, "Current location is null. Using defaults.")
+                        Log.e(TAG, "Exception: %s", task.exception)
+                        mMap?.moveCamera(CameraUpdateFactory
+                            .newLatLngZoom(defaultLocation, DEFAULT_ZOOM.toFloat()))
+                        mMap?.uiSettings?.isMyLocationButtonEnabled = false
+                    }
+                }
             }
-
-            // Actualizar el marcador en el mapa
-            if (currentLocationMarker == null) {
-                // Agregar un marcador nuevo si no existe
-                currentLocationMarker = mMap.addMarker(
-                    MarkerOptions().position(currentLatLng).title("Ubicación actual")
-                )
-            } else {
-                // Mover el marcador existente
-                currentLocationMarker?.position = currentLatLng
-            }
-
-            // Mover la cámara al marcador
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f))
+        } catch (e: SecurityException) {
+            Log.e("Exception: %s", e.message, e)
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        // Detener las actualizaciones de ubicación al cerrar la actividad
-        fusedLocationProviderClient.removeLocationUpdates(locationCallback)
+    // Variables relacionadas con la clase
+    companion object {
+        private val TAG = MapsActivity::class.java.simpleName
+        private const val DEFAULT_ZOOM = 15
+        private const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
+
+        // Keys for storing activity state.
+        // [START maps_current_place_state_keys]
+//        private const val KEY_CAMERA_POSITION = "camera_position"
+//        private const val KEY_LOCATION = "location"
+        // [END maps_current_place_state_keys]
+
+        // Used for selecting the current place.
+//        private const val M_MAX_ENTRIES = 5
     }
 }
