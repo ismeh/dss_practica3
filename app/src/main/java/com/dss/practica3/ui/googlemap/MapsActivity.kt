@@ -6,29 +6,17 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import com.dss.practica3.R
 import com.dss.practica3.databinding.ActivityMapsBinding
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 
 
@@ -39,11 +27,7 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient // Google Play Services Location Provider
-//    private lateinit var locationRequest: LocationRequest
-//    private var currentLocationMarker: Marker? = null
 
-
-//    private var map: GoogleMap? = null
     private var locationPermissionGranted = false
     private val defaultLocation = LatLng(37.197082561503294, -3.624592936200811) //ETSIIT
     private var lastKnownLocation: Location? = null
@@ -182,7 +166,7 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback {
     // Variables relacionadas con la clase
     companion object {
         private val TAG = MapsActivity::class.java.simpleName
-        private const val DEFAULT_ZOOM = 15
+        private const val DEFAULT_ZOOM = 13
         private const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
 
         // Keys for storing activity state.

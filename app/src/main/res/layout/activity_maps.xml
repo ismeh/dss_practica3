@@ -30,7 +30,6 @@ android:paddingTop="?attr/actionBarSize">
         tools:context=".ui.googlemap.MapsActivity"
         tools:layout_editor_absoluteX="-25dp"
         map:mapType="normal"
-        map:cameraZoom="8"
         map:liteMode="false"/>
 
 
