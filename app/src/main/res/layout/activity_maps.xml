@@ -27,10 +27,9 @@ android:paddingTop="?attr/actionBarSize">
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:context=".ui.googlemap.MapsActivity"
-        tools:layout_editor_absoluteX="-25dp"
+        map:liteMode="false"
         map:mapType="normal"
-        map:liteMode="false"/>
+        tools:context=".ui.googlemap.MapsActivity" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
