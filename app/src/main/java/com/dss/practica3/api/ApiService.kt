@@ -1,6 +1,7 @@
 package com.dss.practica3.api
 
 import com.dss.practica3.models.Product
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -41,4 +42,7 @@ interface ApiService {
     fun deleteProduct(@Query("token") token: String, @Query("id") Id: Long): Call<Integer>
 
 
+
+    @GET("/api/cart/checkout")
+    fun checkout(@Query("ids") ids: String): Call<ResponseBody>
 }
