@@ -63,8 +63,21 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback {
 
         // Add a marker in Maracena and move the camera
         val maracena = LatLng(37.20845336833197, -3.6315063638540823)
-        mMap.addMarker(MarkerOptions().position(maracena).title("Marcador en el Kebab Maracena"))
+        mMap.addMarker(MarkerOptions().position(maracena).title("Kebab Maracena"))
         mMap.moveCamera(CameraUpdateFactory.newLatLng(maracena))
+
+
+        val almeria = LatLng(36.84897604554465, -2.4428262351802656)
+        mMap.addMarker(MarkerOptions().position(almeria).title("Almacen de Almería"))
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(almeria))
+
+        val murcia = LatLng(37.9879040328091, -1.1571319715795811)
+        mMap.addMarker(MarkerOptions().position(murcia).title("Punto de venta - Murcia"))
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(murcia))
+
+        val huetor_vega = LatLng(37.14550327276873, -3.571675225119709)
+        mMap.addMarker(MarkerOptions().position(huetor_vega).title("Punto de venta - Huetor Vega"))
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(huetor_vega))
 
         // Turn on the My Location layer and the related control on the map.
         updateLocationUI()
