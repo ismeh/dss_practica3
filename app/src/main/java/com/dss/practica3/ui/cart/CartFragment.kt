@@ -106,12 +106,19 @@ class CartFragment : Fragment(), CartAdapter.OnAddToCartClickListener,
 
     // todo: revisar
     private suspend fun checkout(){
+
+        Log.d("CART_SERVICE", "Realizando compra " + CartService.getItems().size)
         val listCartIds: List<CartItem> = CartService.getItems()
-        val cartIds = listCartIds.joinToString("_") { it.productId.toString() }
+        val cartIds = listCartIds.flatMap { cartItem -> List(cartItem.quantity) { cartItem.productId } }.joinToString("_")
         apiService.checkout(cartIds).enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody?>?, response: Response<ResponseBody?>) {
                 if (response.isSuccessful && response.body() != null) {
                     try {
+                        lifecycleScope.launch {
+                            CartService.removeItems()
+                            fetchCart()
+
+                        }
                         // Guardar el archivo en el almacenamiento interno
                         val pdfFile = File(
                             context!!.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS),
@@ -126,6 +133,7 @@ class CartFragment : Fragment(), CartAdapter.OnAddToCartClickListener,
                                 }
                             }
                         }
+
                         // Abrir el PDF con un visor
                         val pdfUri = FileProvider.getUriForFile(
                             context!!,
