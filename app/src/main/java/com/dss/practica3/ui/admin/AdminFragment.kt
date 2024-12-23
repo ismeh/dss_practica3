@@ -15,7 +15,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dss.practica3.R
-import com.dss.practica3.adapters.AdminAdapter
 import com.dss.practica3.api.ApiClient
 import com.dss.practica3.api.ApiService
 import com.dss.practica3.databinding.FragmentAdminBinding

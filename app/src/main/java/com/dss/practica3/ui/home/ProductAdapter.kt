@@ -1,4 +1,4 @@
-package com.dss.practica3.adapters
+package com.dss.practica3.ui.home
 
 import android.view.LayoutInflater
 import android.view.View

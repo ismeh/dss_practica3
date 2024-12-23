@@ -1,4 +1,4 @@
-package com.dss.practica3.adapters
+package com.dss.practica3.ui.cart
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
