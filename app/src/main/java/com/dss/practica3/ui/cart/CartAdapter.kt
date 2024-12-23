@@ -1,4 +1,4 @@
-package com.dss.practica3.adapters
+package com.dss.practica3.ui.cart
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -70,5 +70,16 @@ class CartAdapter(
                 }
             }
         }
+    }
+
+    fun getTotalPrice(): Double {
+        return cartItems.sumOf { cartItem ->
+            val product = products.find { it.id == cartItem.productId }
+            product?.price?.times(cartItem.quantity) ?: 0.0
+        }
+    }
+
+    fun getProducts(): List<Product> {
+        return products
     }
 }

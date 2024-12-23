@@ -34,10 +34,17 @@
             android:id="@+id/editItem"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginHorizontal="10dp"
+            android:layout_marginLeft="10dp"
+            android:onClick="editItem"
+            android:text="✎" />
 
-            android:onClick="addToCart"
-            android:text="+" />
+        <Button
+            android:id="@+id/deleteItem"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginHorizontal="3dp"
+            android:onClick="deleteItem"
+            android:text="x" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

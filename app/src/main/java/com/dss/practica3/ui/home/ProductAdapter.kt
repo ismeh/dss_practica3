@@ -1,4 +1,4 @@
-package com.dss.practica3.adapters
+package com.dss.practica3.ui.home
 
 import android.view.LayoutInflater
 import android.view.View
@@ -21,7 +21,7 @@ class ProductAdapter(
     class ProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val textViewName: TextView = itemView.findViewById(R.id.textViewName)
         val textViewPrice: TextView = itemView.findViewById(R.id.textViewPrice)
-        val addItemToCart: Button = itemView.findViewById(R.id.addItemToCart)
+        val addItemToCart: Button = itemView.findViewById(R.id.editItem)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {

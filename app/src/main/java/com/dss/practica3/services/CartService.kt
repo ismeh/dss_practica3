@@ -38,10 +38,17 @@ object CartService {
             }
         }
     }
-
+    suspend fun removeItems() {
+        withContext(Dispatchers.IO) {
+            val item = db.cartItemDao().getAll().forEach() {
+                db.cartItemDao().delete(it)
+            }
+        }
+    }
     suspend fun getItems(): List<CartItem> = withContext(Dispatchers.IO) {
         db.cartItemDao().getAll()
     }
+
 
     suspend fun getItemQuantity(productId: Long): Int = withContext(Dispatchers.IO) {
         db.cartItemDao().getAll().find { it.productId == productId }?.quantity ?: 0

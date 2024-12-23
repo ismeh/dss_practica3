@@ -12,8 +12,13 @@
         android:title="@string/title_cart" />
 
     <item
-        android:id="@+id/navigation_notifications"
-        android:icon="@drawable/ic_notifications_black_24dp"
-        android:title="@string/title_notifications" />
+        android:id="@+id/navigation_map"
+        android:icon="@android:drawable/ic_dialog_map"
+        android:title="@string/title_map" />
+<!--login-->
+    <item
+        android:id="@+id/navigation_login"
+        android:icon="@drawable/baseline_account_circle_24"
+        android:title="Login" />
 
 </menu>
