@@ -29,6 +29,7 @@ Las imágenes de los iconos se han extraido del sistema de imágenes de Android 
 - **Google Maps API**: Para integrar mapas de Google en la aplicación.
 
 ## Estructura de Carpetas y Organización del Código
+```
 project-root/
 ├── app/
 │   ├── src/
@@ -79,6 +80,7 @@ project-root/
 │   └── build.gradle
 ├── build.gradle
 └── settings.gradle
+```
 
 - **api/**: Contiene las interfaces para las llamadas a la API.
 - **dao/**: Contiene las interfaces de acceso a datos para Room.
